@@ -115,16 +115,7 @@ def create_mysql_tables(mysql_conn, table_structure):
 firebird_version = get_firebird_version()
 print("Versão do Firebird instalada:", firebird_version)
 
-def import_data_from_firebird_to_mysql(root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port):
-    firebird_version = get_firebird_version()
-    if firebird_version:
-        messagebox.showinfo("Firebird Version", f"Firebird Version Installed: {firebird_version}")
-    else:
-        error_message = "Error obtaining Firebird version."
-        ErrorPopup(root, error_message)
-        return
-    
-    # Criar um arquivo de log para salvar os registros
+def import_data_from_firebird_to_mysql(root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port):    # Criar um arquivo de log para salvar os registros
     log_file = "import_log.txt"
     with open(log_file, "w") as log:
         # Conectar ao banco de dados Firebird
@@ -287,7 +278,7 @@ class DataImporterGUI:
         port_label.grid(row=4, column=0, sticky="w")
         self.port_entry = tk.Entry(mysql_frame)
         self.port_entry.grid(row=4, column=1, padx=5, pady=5, sticky="we")
-        self.port_entry.insert(0, 3306)
+        self.port_entry.insert(0, 3399)
 
         # Submit Button
         submit_button = tk.Button(self.root, text="Executar", command=self.submit)
@@ -317,10 +308,11 @@ class DataImporterGUI:
         mysql_port = self.port_entry.get()
 
         # Executar a função de importação de dados
-        import_data_from_firebird_to_mysql(firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
+        import_data_from_firebird_to_mysql(self.root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
 
         # Exibir mensagem de confirmação
-        messagebox.showinfo("Submitted", "Connection details submitted successfully!")
+        messagebox.showinfo("Importado", "Processo executado com sucesso!")
+
 
 def main():
     root = tk.Tk()
