@@ -230,14 +230,14 @@ class DataImporterGUI:
         user_label.grid(row=1, column=0, sticky="w")
         self.user_entry = tk.Entry(firebird_frame)
         self.user_entry.grid(row=1, column=1, padx=5, pady=5, sticky="we")
-        self.user_entry.insert(0, "sysdba")
+        self.user_entry.insert(0, 'sysdba')
 
         # Firebird Password
         password_label = tk.Label(firebird_frame, text="Senha:")
         password_label.grid(row=2, column=0, sticky="w")
         self.password_entry = tk.Entry(firebird_frame, show="*")
         self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
-        self.password_entry.insert(0, "masterkey")
+        self.password_entry.insert(0, 'masterkey')
 
         # Separator
         separator = ttk.Separator(self.root, orient='horizontal')
