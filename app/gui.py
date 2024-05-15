@@ -1,5 +1,4 @@
 # gui.py
-import fdb
 import mysql.connector
 import tkinter as tk
 
