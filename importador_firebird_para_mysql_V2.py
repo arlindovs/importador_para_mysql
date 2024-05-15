@@ -228,16 +228,16 @@ class DataImporterGUI:
         # Firebird User
         user_label = tk.Label(firebird_frame, text="Usuário:")
         user_label.grid(row=1, column=0, sticky="w")
-        self.user_entry = tk.Entry(firebird_frame)
-        self.user_entry.grid(row=1, column=1, padx=5, pady=5, sticky="we")
-        self.user_entry.insert(0, 'sysdba')
+        self.firebird_user_entry = tk.Entry(firebird_frame)
+        self.firebird_user_entry.grid(row=1, column=1, padx=5, pady=5, sticky="we")
+        self.firebird_user_entry.insert(0, 'sysdba')
 
         # Firebird Password
         password_label = tk.Label(firebird_frame, text="Senha:")
         password_label.grid(row=2, column=0, sticky="w")
-        self.password_entry = tk.Entry(firebird_frame, show="*")
-        self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
-        self.password_entry.insert(0, 'masterkey')
+        self.firebird_password_entry = tk.Entry(firebird_frame, show="*")
+        self.firebird_password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
+        self.firebird_password_entry.insert(0, 'masterkey')
 
         # Separator
         separator = ttk.Separator(self.root, orient='horizontal')
@@ -267,18 +267,18 @@ class DataImporterGUI:
         self.password_entry = tk.Entry(mysql_frame, show="*")
         self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
 
-        # MySQL Database
-        database_label = tk.Label(mysql_frame, text="Database:")
-        database_label.grid(row=3, column=0, sticky="w")
-        self.database_entry = tk.Entry(mysql_frame)
-        self.database_entry.grid(row=3, column=1, padx=5, pady=5, sticky="we")
-
         # MySQL Port
         port_label = tk.Label(mysql_frame, text="Porta:")
         port_label.grid(row=4, column=0, sticky="w")
         self.port_entry = tk.Entry(mysql_frame)
         self.port_entry.grid(row=4, column=1, padx=5, pady=5, sticky="we")
-        self.port_entry.insert(0, 3399)
+        self.port_entry.insert(0, 3306)
+
+        # MySQL Database
+        database_label = tk.Label(mysql_frame, text="Database:")
+        database_label.grid(row=3, column=0, sticky="w")
+        self.database_entry = tk.Entry(mysql_frame)
+        self.database_entry.grid(row=3, column=1, padx=5, pady=5, sticky="we")
 
         # Submit Button
         submit_button = tk.Button(self.root, text="Executar", command=self.submit)
@@ -291,21 +291,20 @@ class DataImporterGUI:
 
 
     def browse_file(self):
-        filename = filedialog.askopenfilename()
-        if filename:
-            self.file_entry.delete(0, tk.END)
-            self.file_entry.insert(0, filename)
+        file_path = filedialog.askopenfilename(filetypes=(("Firebird Database Files", "*.fdb"), ("All files", "*.*")))
+        self.file_entry.delete(0, tk.END)
+        self.file_entry.insert(0, file_path)
 
     def submit(self):
         # Coletar os dados de entrada
         firebird_db_file = self.file_entry.get()
-        firebird_user = self.user_entry.get()
-        firebird_password = self.password_entry.get()
+        firebird_user = self.firebird_user_entry.get()
+        firebird_password = self.firebird_password_entry.get()
         mysql_host = self.host_entry.get()
         mysql_user = self.user_entry.get()
         mysql_password = self.password_entry.get()
-        mysql_database = self.database_entry.get()
         mysql_port = self.port_entry.get()
+        mysql_database = self.database_entry.get()
 
         # Executar a função de importação de dados
         import_data_from_firebird_to_mysql(self.root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
