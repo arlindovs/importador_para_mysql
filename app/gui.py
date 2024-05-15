@@ -1,4 +1,3 @@
-# gui.py
 import mysql.connector
 import tkinter as tk
 
@@ -16,9 +15,10 @@ class DataImporterGUI:
         # Frame para os dados de conexão do Firebird
         firebird_frame = tk.LabelFrame(self.root, text="Dados de Conexão do Firebird", padx=10, pady=10)
         firebird_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        firebird_frame.config(bg="#f0f0f0")  # Cor de fundo
 
         # Firebird DB File
-        file_label = tk.Label(firebird_frame, text="DB File:")
+        file_label = tk.Label(firebird_frame, text="DB File:", bg="#f0f0f0")  # Cor de fundo
         file_label.grid(row=0, column=0, sticky="w")
         self.file_entry = tk.Entry(firebird_frame, width=40)
         self.file_entry.grid(row=0, column=1, padx=5, pady=5, sticky="we")
@@ -26,14 +26,14 @@ class DataImporterGUI:
         file_button.grid(row=0, column=2, padx=5, pady=5)
 
         # Firebird User
-        user_label = tk.Label(firebird_frame, text="Usuário:")
+        user_label = tk.Label(firebird_frame, text="Usuário:", bg="#f0f0f0")  # Cor de fundo
         user_label.grid(row=1, column=0, sticky="w")
         self.firebird_user_entry = tk.Entry(firebird_frame)
         self.firebird_user_entry.grid(row=1, column=1, padx=5, pady=5, sticky="we")
         self.firebird_user_entry.insert(0, 'sysdba')
 
         # Firebird Password
-        password_label = tk.Label(firebird_frame, text="Senha:")
+        password_label = tk.Label(firebird_frame, text="Senha:", bg="#f0f0f0")  # Cor de fundo
         password_label.grid(row=2, column=0, sticky="w")
         self.firebird_password_entry = tk.Entry(firebird_frame, show="*")
         self.firebird_password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
@@ -46,56 +46,57 @@ class DataImporterGUI:
         # Frame para os dados de conexão do MySQL
         mysql_frame = tk.LabelFrame(self.root, text="Dados de Conexão do MySQL", padx=10, pady=10)
         mysql_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        mysql_frame.config(bg="#f0f0f0")  # Cor de fundo
 
         # MySQL Host
-        host_label = tk.Label(mysql_frame, text="Host:")
+        host_label = tk.Label(mysql_frame, text="Host:", bg="#f0f0f0")  # Cor de fundo
         host_label.grid(row=0, column=0, sticky="w")
         self.host_entry = tk.Entry(mysql_frame)
         self.host_entry.grid(row=0, column=1, padx=5, pady=5, sticky="we")
         self.host_entry.insert(0, "localhost")
 
         # MySQL User
-        user_label = tk.Label(mysql_frame, text="Usuário:")
+        user_label = tk.Label(mysql_frame, text="Usuário:", bg="#f0f0f0")  # Cor de fundo
         user_label.grid(row=1, column=0, sticky="w")
         self.user_entry = tk.Entry(mysql_frame)
         self.user_entry.grid(row=1, column=1, padx=5, pady=5, sticky="we")
         self.user_entry.insert(0, "root")
 
         # MySQL Password
-        password_label = tk.Label(mysql_frame, text="Senha:")
+        password_label = tk.Label(mysql_frame, text="Senha:", bg="#f0f0f0")  # Cor de fundo
         password_label.grid(row=2, column=0, sticky="w")
         self.password_entry = tk.Entry(mysql_frame, show="*")
         self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="we")
 
         # MySQL Port
-        port_label = tk.Label(mysql_frame, text="Porta:")
+        port_label = tk.Label(mysql_frame, text="Porta:", bg="#f0f0f0")  # Cor de fundo
         port_label.grid(row=3, column=0, sticky="w")
         self.port_entry = tk.Entry(mysql_frame)
         self.port_entry.grid(row=3, column=1, padx=5, pady=5, sticky="we")
         self.port_entry.insert(0, 3306)
 
         # MySQL Database Combobox
-        self.database_label = tk.Label(mysql_frame, text="Database:")
+        self.database_label = tk.Label(mysql_frame, text="Database:", bg="#f0f0f0")  # Cor de fundo
         self.database_label.grid(row=4, column=0, sticky="w")
 
         self.database_combobox = ttk.Combobox(mysql_frame, state="readonly")
         self.database_combobox.grid(row=4, column=1, padx=5, pady=5, sticky="we")
 
         # Label para mensagens de erro
-        self.error_label = tk.Label(self.root, text="", fg="red")
+        self.error_label = tk.Label(self.root, text="", fg="red", bg="#f0f0f0")  # Cor de fundo
         self.error_label.grid(row=4, column=0, padx=10, pady=(0, 10), sticky="ew")
 
         # Connect Button
-        self.connect_button = tk.Button(mysql_frame, text="Conectar", command=self.connect_to_mysql)
+        self.connect_button = tk.Button(mysql_frame, text="Conectar", command=self.connect_to_mysql, bg="#007bff", fg="white")  # Cores de fundo e texto
         self.connect_button.grid(row=4, column=2, columnspan=2, pady=(10, 0))
 
         # Submit Button
-        self.submit_button = tk.Button(self.root, text="Executar", command=self.submit)
+        self.submit_button = tk.Button(self.root, text="Executar", command=self.submit, bg="#28a745", fg="white")  # Cores de fundo e texto
         self.submit_button.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
 
         # Footer
         current_year = datetime.now().year
-        footer_label = tk.Label(self.root, text=f"©{current_year} Copyright - CodeCoffee", anchor="e")
+        footer_label = tk.Label(self.root, text=f"©{current_year} Copyright - CodeCoffee", anchor="e", bg="#f0f0f0")  # Cor de fundo
         footer_label.grid(row=6, column=0, padx=10, pady=(0, 10), sticky="ew")
 
     def browse_file(self):

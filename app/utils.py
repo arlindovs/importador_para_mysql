@@ -1,4 +1,3 @@
-# utils.py
 import fdb
 import mysql.connector
 import subprocess
