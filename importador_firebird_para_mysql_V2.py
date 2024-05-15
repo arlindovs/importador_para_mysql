@@ -269,26 +269,78 @@ class DataImporterGUI:
 
         # MySQL Port
         port_label = tk.Label(mysql_frame, text="Porta:")
-        port_label.grid(row=4, column=0, sticky="w")
+        port_label.grid(row=3, column=0, sticky="w")
         self.port_entry = tk.Entry(mysql_frame)
-        self.port_entry.grid(row=4, column=1, padx=5, pady=5, sticky="we")
+        self.port_entry.grid(row=3, column=1, padx=5, pady=5, sticky="we")
         self.port_entry.insert(0, 3306)
 
-        # MySQL Database
-        database_label = tk.Label(mysql_frame, text="Database:")
-        database_label.grid(row=3, column=0, sticky="w")
-        self.database_entry = tk.Entry(mysql_frame)
-        self.database_entry.grid(row=3, column=1, padx=5, pady=5, sticky="we")
+        # MySQL Database Combobox
+        self.database_label = tk.Label(mysql_frame, text="Database:")
+        self.database_label.grid(row=4, column=0, sticky="w")
+
+        self.database_combobox = ttk.Combobox(mysql_frame, state="readonly")
+        self.database_combobox.grid(row=4, column=1, padx=5, pady=5, sticky="we")
+
+        # Label para mensagens de erro
+        self.error_label = tk.Label(self.root, text="", fg="red")
+        self.error_label.grid(row=4, column=0, padx=10, pady=(0, 10), sticky="ew")
+
+        # Connect Button
+        self.connect_button = tk.Button(mysql_frame, text="Conectar", command=self.connect_to_mysql)
+        self.connect_button.grid(row=4, column=2, columnspan=2, pady=(10, 0))
 
         # Submit Button
-        submit_button = tk.Button(self.root, text="Executar", command=self.submit)
-        submit_button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+        self.submit_button = tk.Button(self.root, text="Executar", command=self.submit)
+        self.submit_button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+
+        # # Submit Button
+        # submit_button = tk.Button(self.root, text="Executar", command=self.submit)
+        # submit_button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
         
         # Footer
         current_year = datetime.now().year
         footer_label = tk.Label(self.root, text=f"©{current_year} Copyright - CodeCoffee", anchor="e")
         footer_label.grid(row=4, column=0, padx=10, pady=(0, 10), sticky="ew")
+    
 
+
+    def connect_to_mysql(self):
+        try:
+            # Conectar ao MySQL para recuperar os nomes dos bancos de dados disponíveis
+            mysql_conn = mysql.connector.connect(
+                host=self.host_entry.get(),
+                user=self.user_entry.get(),
+                password=self.password_entry.get(),
+                port=int(self.port_entry.get())
+            )
+            mysql_cursor = mysql_conn.cursor()
+            mysql_cursor.execute("SHOW DATABASES")
+            databases = [db[0] for db in mysql_cursor.fetchall()]
+
+            # Preencher a combobox com os nomes dos bancos de dados
+            self.database_combobox["values"] = databases
+
+            # Ativar a combobox
+            self.database_label.config(state="normal")
+            self.database_combobox.config(state="readonly")
+
+            # Fechar a conexão
+            mysql_cursor.close()
+            mysql_conn.close()
+        except mysql.connector.Error as e:
+            # Lidar com erros de conexão ou consulta
+            messagebox.showerror("Erro", f"Erro ao conectar ao MySQL: {e}")
+            
+        # Destacar os campos que precisam ser preenchidos
+        self.highlight_required_fields()
+
+    def highlight_required_fields(self):
+        required_fields = [self.file_entry, self.firebird_user_entry, self.firebird_password_entry, self.host_entry, self.user_entry, self.password_entry, self.port_entry]
+        for field in required_fields:
+            if not field.get():
+                field.config(bg="pink")
+            else:
+                field.config(bg="white")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(filetypes=(("Firebird Database Files", "*.fdb"), ("All files", "*.*")))
@@ -296,22 +348,33 @@ class DataImporterGUI:
         self.file_entry.insert(0, file_path)
 
     def submit(self):
-        # Coletar os dados de entrada
-        firebird_db_file = self.file_entry.get()
-        firebird_user = self.firebird_user_entry.get()
-        firebird_password = self.firebird_password_entry.get()
-        mysql_host = self.host_entry.get()
-        mysql_user = self.user_entry.get()
-        mysql_password = self.password_entry.get()
-        mysql_port = self.port_entry.get()
-        mysql_database = self.database_entry.get()
+        # Verificar se os campos obrigatórios foram preenchidos
+        if self.validate_fields():
+            # Coletar os dados de entrada
+            firebird_db_file = self.file_entry.get()
+            firebird_user = self.firebird_user_entry.get()
+            firebird_password = self.firebird_password_entry.get()
+            mysql_host = self.host_entry.get()
+            mysql_user = self.user_entry.get()
+            mysql_password = self.password_entry.get()
+            mysql_port = self.port_entry.get()
+            mysql_database = self.database_combobox.get()
 
-        # Executar a função de importação de dados
-        import_data_from_firebird_to_mysql(self.root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
+            # Executar a função de importação de dados
+            import_data_from_firebird_to_mysql(self.root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
 
-        # Exibir mensagem de confirmação
-        messagebox.showinfo("Importado", "Processo executado com sucesso!")
+            # Exibir mensagem de confirmação
+            messagebox.showinfo("Importado", "Processo executado com sucesso!")
+        else:
+            # Exibir mensagem de erro se os campos obrigatórios não estiverem preenchidos
+            messagebox.showerror("Erro", "Todos os campos são obrigatórios.")
 
+    def validate_fields(self):
+        required_fields = [self.file_entry, self.host_entry, self.user_entry, self.password_entry, self.port_entry]
+        for field in required_fields:
+            if not field.get():
+                return False
+        return True
 
 def main():
     root = tk.Tk()
