@@ -13,7 +13,7 @@ class DataImporterGUI:
         self.root.title("Importador de Dados")
 
         # Frame para os dados de conexão do Firebird
-        firebird_frame = tk.LabelFrame(self.root, text="Dados de Conexão do Firebird", padx=10, pady=10)
+        firebird_frame = tk.LabelFrame(self.root, text="Origem: Dados de Conexão do Firebird", padx=10, pady=10)
         firebird_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         firebird_frame.config(bg="#f0f0f0")  # Cor de fundo
 
@@ -44,7 +44,7 @@ class DataImporterGUI:
         separator.grid(row=1, column=0, columnspan=3, sticky="ew", pady=10)
 
         # Frame para os dados de conexão do MySQL
-        mysql_frame = tk.LabelFrame(self.root, text="Dados de Conexão do MySQL", padx=10, pady=10)
+        mysql_frame = tk.LabelFrame(self.root, text="Destino: Dados de Conexão do MySQL", padx=10, pady=10)
         mysql_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         mysql_frame.config(bg="#f0f0f0")  # Cor de fundo
 
@@ -88,16 +88,21 @@ class DataImporterGUI:
 
         # Connect Button
         self.connect_button = tk.Button(mysql_frame, text="Conectar", command=self.connect_to_mysql, bg="#007bff", fg="white")  # Cores de fundo e texto
-        self.connect_button.grid(row=4, column=2, columnspan=2, pady=(10, 0))
+        self.connect_button.grid(row=4, column=2, columnspan=2, pady=(5, 5))
 
         # Submit Button
         self.submit_button = tk.Button(self.root, text="Executar", command=self.submit, bg="#28a745", fg="white")  # Cores de fundo e texto
         self.submit_button.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
+        
+        # Progress Bar
+        self.progress_bar = ttk.Progressbar(self.root, orient="horizontal", length=200, mode="determinate")
+        self.progress_bar.grid(row=6, column=0, padx=10, pady=10, sticky="ew")
+        self.progress_bar["value"] = 0
 
         # Footer
         current_year = datetime.now().year
         footer_label = tk.Label(self.root, text=f"©{current_year} Copyright - CodeCoffee", anchor="e", bg="#f0f0f0")  # Cor de fundo
-        footer_label.grid(row=6, column=0, padx=10, pady=(0, 10), sticky="ew")
+        footer_label.grid(row=7, column=0, padx=10, pady=(0, 10), sticky="ew")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(filetypes=(("Firebird Database Files", "*.fdb"), ("All files", "*.*")))
@@ -154,10 +159,16 @@ class DataImporterGUI:
             mysql_password = self.password_entry.get()
             mysql_port = self.port_entry.get()
             mysql_database = self.database_combobox.get()
+            
+            # Atualizar a barra de progresso
+            self.progress_bar["value"] = 20
 
             # Executar a função de importação de dados
             import_data_from_firebird_to_mysql(self.root, firebird_db_file, firebird_user, firebird_password, mysql_host, mysql_user, mysql_password, mysql_database, mysql_port)
 
+            # Atualizar a barra de progresso
+            self.progress_bar["value"] = 100
+            
             # Exibir mensagem de confirmação
             messagebox.showinfo("Importado", "Processo executado com sucesso!")
         else:
