@@ -1,0 +1,7 @@
+
+
+## CONVERSÃO DA VERSÃO 32 PARA 64 BITS
+--- GERAR BACKUP DO 32 BITS
+& "C:\Program Files (x86)\Firebird\Firebird_2_5\bin\gbak.exe" -b -v -user sysdba -password masterkey "C:\IMPORT\CABRAL_FERRAMENTAS\base.fdb" "C:\IMPORT\CABRAL_FERRAMENTAS\backup.fbk"
+--- RETALRAR BACKUP PARA VERSÃO 64 BITS
+& "C:\Program Files\Firebird\Firebird_3_0\gbak.exe" -c -v -user sysdba -password masterkey "C:\IMPORT\CABRAL_FERRAMENTAS\backup.fbk" "C:\IMPORT\CABRAL_FERRAMENTAS\base3.fdb"
