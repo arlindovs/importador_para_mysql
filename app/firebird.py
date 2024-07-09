@@ -76,7 +76,7 @@ def convert_firebird_field_type_to_mysql(field_type, field_length):
         12: 'DATE',
         13: 'TIME',
         14: 'CHAR',
-        16: 'BIGINT',
+        16: 'DECIMAL(18,6)',
         27: 'DOUBLE',
         35: 'TIMESTAMP(6)',
         37: 'VARCHAR',
